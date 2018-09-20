@@ -84,7 +84,7 @@ check.spelling = function(df_in, var_name, distance_sensitivity){
   } else {
     # User interaction to replace spelling
     for(i in 1:(length(sorted.final.list[,1]))){
-      cat("1.\"", as.character(sorted.final.list$spelling.1[i]),"\"", "   2.\"", as.character(sorted.final.list$spelling.2[i]),"\"\n", sep="")
+      cat("\n1.\"", as.character(sorted.final.list$spelling.1[i]),"\"", "   2.\"", as.character(sorted.final.list$spelling.2[i]),"\"\n", sep="")
       cat("Distance =", as.character(sorted.final.list$distance[i]))
       cat("\n1. If spelling 1 is correct")
       cat("\n2. If spelling 2 is correct")
@@ -92,17 +92,29 @@ check.spelling = function(df_in, var_name, distance_sensitivity){
       cat("\n4. If both correct or you do not want to make any substitutions")
       val <- eval(parse(text=readline(prompt="Enter option: ")))
       # Save correct and incorrect spelling
-        # if(length(val)==0 || val>2){
-        #   correct.sp <- readline(prompt="Enter correct spelling: ")
-        #   incorrect.sp1 <- sorted.final.list$spelling.1[i]
-        #   incorrect.sp2 <- sorted.final.list$spelling.2[i]
-        # } else if(val == 1){
-        #   correct.sp    <- sorted.final.list$spelling.1[i]
-        #   incorrect.sp1 <- sorted.final.list$spelling.2[i]
-        # } else if(val == 2){
-        #   correct.sp    <- sorted.final.list$spelling.2[i]
-        #   incorrect.sp1 <- sorted.final.list$spelling.1[i]
-        # }
+      if(val==1){
+        correct.sp    <- sorted.final.list$spelling.1[i]
+        incorrect.sp1 <- sorted.final.list$spelling.2[i]
+        # substitute spelling and adjust factor levels
+        df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in[[quo_text(quo_var)]])
+      } else if(val==2) {
+        correct.sp    <- sorted.final.list$spelling.2[i]
+        incorrect.sp1 <- sorted.final.list$spelling.1[i]
+        # substitute spelling and adjust factor levels
+        df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in[[quo_text(quo_var)]])
+      } else if(val==3){
+        correct.sp <- readline(prompt="\nEnter correct spelling: ")
+        incorrect.sp1 <- sorted.final.list$spelling.1[i]
+        incorrect.sp2 <- sorted.final.list$spelling.2[i]
+        # substitute spelling and adjust factor levels
+        df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in[[quo_text(quo_var)]])
+        df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp2, correct.sp, df_in[[quo_text(quo_var)]])
+      } else if(val==4){
+        # do nothing
+      } else {
+        cat("\nInvalid option")
+      }
+
       # Replace spelling and adjust factor levels
         # df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in[[quo_text(quo_var)]])
         # if(length(val)==0 || val>2){
