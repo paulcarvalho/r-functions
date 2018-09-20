@@ -41,7 +41,9 @@ check.spelling = function(df_in, var_name, distance_sensitivity){
       }
     }
   }
+  # full list contains repeated pairs
   full.list = cbind(list.1,list.2,list.3)
+  # create a new list that omits repeated pairs
   refined.list.1 = NA
   refined.list.2 = NA
   refined.list.3 = NA
