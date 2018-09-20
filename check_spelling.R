@@ -1,9 +1,8 @@
 ### AUTHOR: Paul Carvalho    #####
 ### Date created: 03/15/2018 #####
-### Version 2                #####
 
 # DESCRIPTION: Check for similar spelling within character or factor vector and run through user interaction 
-#              to correct spelling
+#              to make changes
 # INPUTS:  df_in                = dataframe containing character or factor vector to check spelling.
 #          var_name             = bare parameter name indicating the vector to check spelling. 
 #          distance_sensitivity = positive integer indicating approximate string distance between characters in char
@@ -103,7 +102,7 @@ check.spelling = function(df_in, var_name, distance_sensitivity){
         # substitute spelling and adjust factor levels
         df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in[[quo_text(quo_var)]])
       } else if(val==3){
-        correct.sp <- readline(prompt="\nEnter correct spelling: ")
+        correct.sp <- readline(prompt="Enter correct spelling: ")
         incorrect.sp1 <- sorted.final.list$spelling.1[i]
         incorrect.sp2 <- sorted.final.list$spelling.2[i]
         # substitute spelling and adjust factor levels
@@ -114,12 +113,6 @@ check.spelling = function(df_in, var_name, distance_sensitivity){
       } else {
         cat("\nInvalid option")
       }
-
-      # Replace spelling and adjust factor levels
-        # df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in[[quo_text(quo_var)]])
-        # if(length(val)==0 || val>2){
-        #   df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp2, correct.sp, df_in[[quo_text(quo_var)]])
-        # }
     } # End of interactive for loop
   } 
 
