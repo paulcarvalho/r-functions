@@ -92,29 +92,38 @@ check.spelling = function(df_in, var_name, df_in_1=NULL, var_name_1=NULL, distan
       # refined.list.3[count.1] = full.list[1,3]
     } else {
       flag = 0
-      for(m in 1:length(refined.list.1)){
-        if(full.list[k,1] == refined.list.1[m] && full.list[k,2] == refined.list.2[m]){
+      for(m in 1:length(refined_df_dist$name_1)){
+        if(df_dist$name_1[k] == refined_df_dist$name_1[m] && df_dist$name_2[k] == refined_df_dist$name_2[m]){
+        # if(full.list[k,1] == refined.list.1[m] && full.list[k,2] == refined.list.2[m]){
           flag = 1
-        } else if (full.list[k,1] == refined.list.2[m] && full.list[k,2] == refined.list.1[m]){
+        } else if (df_dist$name_1[k] == refined_df_dist$name_2[m] && df_dist$name_2[k] == refined_df_dist$name_1[m]){
+        # } else if (full.list[k,1] == refined.list.2[m] && full.list[k,2] == refined.list.1[m]){
           flag = 1
         }
       }
       if(flag == 0){
         count.1 = count.1+1
-        refined.list.1[count.1] = full.list[k,1]
-        refined.list.2[count.1] = full.list[k,2]
-        refined.list.3[count.1] = full.list[k,3]
+        refined_df_dist$name_1[count.1]    <- df_dist$name_1[k]
+        refined_df_dist$name_2[count.1]    <- df_dist$name_2[k]
+        refined_df_dist$df_name_1[count.1] <- df_dist$df_name_1[k]
+        refined_df_dist$df_name_2[count.1] <- df_dist$df_name_2[k]
+        refined_df_dist$distance[count.1]  <- df_dist$distance[k]
+        # refined.list.1[count.1] = full.list[k,1]
+        # refined.list.2[count.1] = full.list[k,2]
+        # refined.list.3[count.1] = full.list[k,3]
       }
     }
   }
-  final.list = data.frame(spelling.1 = refined.list.1,
-                          spelling.2 = refined.list.2,
-                          distance = refined.list.3)
-  list.order = order(final.list$distance)
-  sorted.final.list = final.list[list.order,]
+  list.order <- order(refined_df_dist$distance)
+  refined_df_dist <- refined_df_dist[list.order,]
+  # final.list = data.frame(spelling.1 = refined.list.1,
+  #                         spelling.2 = refined.list.2,
+  #                         distance = refined.list.3)
+  # list.order = order(final.list$distance)
+  # sorted.final.list = final.list[list.order,]
   
   # If function does not detect differences in spelling, then do nothing
-  if(is.na(sorted.final.list$spelling.1[1])){
+  if(is.na(refined_df_dist$name_1[1])){
     cat("No differences detected for specified distance sensitivity!")
   
   # If differences detected, then enter interactive loop
