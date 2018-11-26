@@ -44,9 +44,6 @@ check.spelling = function(df_in, var_name, df_in_1=NULL, var_name_1=NULL, distan
                        name_2=character(),
                        df_name_2=character(),
                        distance=numeric())
-  # list.1 = NA
-  # list.2 = NA
-  # list.3 = NA
   count = 0
   for(i in 1:length(df_list$x)){
     for(j in i:length(df_list$x)){
@@ -58,26 +55,17 @@ check.spelling = function(df_in, var_name, df_in_1=NULL, var_name_1=NULL, distan
         df_dist$df_name_1[count] <- df_list$name[i]
         df_dist$df_name_2[count] <- df_list$name[j]
         df_dist$distance[count]  <- dist
-        # 
-        # list.1[count] = x[i]
-        # list.2[count] = x[j]
-        # list.3[count] = dist
       }
     }
   }
-  
-  # full list contains repeated pairs
-  # full.list = cbind(list.1,list.2,list.3)
-  
+
   # create a new list that omits repeated pairs
   refined_df_dist <- data.frame(name_1=character(),
                                 df_name_1=character(),
                                 name_2=character(),
                                 df_name_2=character(),
                                 distance=numeric())
-  # refined.list.1 = NA
-  # refined.list.2 = NA
-  # refined.list.3 = NA
+
   count.1 = 0
   for(k in 1:length(df_dist$name_1)){
     if(k == 1){
@@ -87,17 +75,13 @@ check.spelling = function(df_in, var_name, df_in_1=NULL, var_name_1=NULL, distan
       refined_df_dist$df_name_1[count.1] <- df_dist$df_name_1[k]
       refined_df_dist$df_name_2[count.1] <- df_dist$df_name_2[k]
       refined_df_dist$distance[count.1]  <- df_dist$distance[k]
-      # refined.list.1[count.1] = full.list[1,1]
-      # refined.list.2[count.1] = full.list[1,2]
-      # refined.list.3[count.1] = full.list[1,3]
+
     } else {
       flag = 0
       for(m in 1:length(refined_df_dist$name_1)){
         if(df_dist$name_1[k] == refined_df_dist$name_1[m] && df_dist$name_2[k] == refined_df_dist$name_2[m]){
-        # if(full.list[k,1] == refined.list.1[m] && full.list[k,2] == refined.list.2[m]){
           flag = 1
         } else if (df_dist$name_1[k] == refined_df_dist$name_2[m] && df_dist$name_2[k] == refined_df_dist$name_1[m]){
-        # } else if (full.list[k,1] == refined.list.2[m] && full.list[k,2] == refined.list.1[m]){
           flag = 1
         }
       }
@@ -108,20 +92,13 @@ check.spelling = function(df_in, var_name, df_in_1=NULL, var_name_1=NULL, distan
         refined_df_dist$df_name_1[count.1] <- df_dist$df_name_1[k]
         refined_df_dist$df_name_2[count.1] <- df_dist$df_name_2[k]
         refined_df_dist$distance[count.1]  <- df_dist$distance[k]
-        # refined.list.1[count.1] = full.list[k,1]
-        # refined.list.2[count.1] = full.list[k,2]
-        # refined.list.3[count.1] = full.list[k,3]
+
       }
     }
   }
   list.order <- order(refined_df_dist$distance)
   refined_df_dist <- refined_df_dist[list.order,]
-  # final.list = data.frame(spelling.1 = refined.list.1,
-  #                         spelling.2 = refined.list.2,
-  #                         distance = refined.list.3)
-  # list.order = order(final.list$distance)
-  # sorted.final.list = final.list[list.order,]
-  
+
   # If function does not detect differences in spelling, then do nothing
   if(is.na(refined_df_dist$name_1[1])){
     cat("No differences detected for specified distance sensitivity!")
