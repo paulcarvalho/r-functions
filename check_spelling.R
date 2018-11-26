@@ -19,19 +19,19 @@ library(dplyr)
 check.spelling = function(df_in, var_name, df_in_1=NULL, var_name_1=NULL, distance_sensitivity){
   # turn bare args into quosures
   quo_var <- enquo(var_name)
-  if(is.null(var_name_1) == FALSE){
+  if(is.null(df_in_1) == FALSE){
     quo_var_1 <- enquo(var_name_1)  
   }
   
   # quo_text(quo_var) gets the string of the column name from bare parameter input
   char.list <- as.character(df_in[[quo_text(quo_var)]])
-  if(is.null(var_name_1) == FALSE){
+  if(is.null(df_in_1) == FALSE){
     char.list.1 <- as.character(df_in_1[[quo_text(quo_var_1)]])
   }
 
   # Remove na's from the list of characters
   char.list <- na.omit(char.list)
-  if(is.null(var_name_1) == FALSE){
+  if(is.null(df_in_1) == FALSE){
     char.list.1 <- na.omit(char.list.1)
   }
 
@@ -152,40 +152,30 @@ check.spelling = function(df_in, var_name, df_in_1=NULL, var_name_1=NULL, distan
       cat("\n3. If both incorrect and you want to enter the correct spelling")
       cat("\n4. If both correct or you do not want to make any substitutions")
       val <- eval(parse(text=readline(prompt="Enter option: ")))
-    }
-
-    # for(i in 1:(length(sorted.final.list[,1]))){
-    #   cat("\n1.\"", as.character(sorted.final.list$spelling.1[i]),"\"", "   2.\"", as.character(sorted.final.list$spelling.2[i]),"\"\n", sep="")
-    #   cat("Distance =", as.character(sorted.final.list$distance[i]))
-    #   cat("\n1. If spelling 1 is correct")
-    #   cat("\n2. If spelling 2 is correct")
-    #   cat("\n3. If both incorrect and you want to enter the correct spelling")
-    #   cat("\n4. If both correct or you do not want to make any substitutions")
-    #   val <- eval(parse(text=readline(prompt="Enter option: ")))
-    #   # Save correct and incorrect spelling
-    #   if(val==1){
-    #     correct.sp    <- sorted.final.list$spelling.1[i]
-    #     incorrect.sp1 <- sorted.final.list$spelling.2[i]
-    #     # substitute spelling and adjust factor levels
-    #     df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in[[quo_text(quo_var)]])
-    #   } else if(val==2) {
-    #     correct.sp    <- sorted.final.list$spelling.2[i]
-    #     incorrect.sp1 <- sorted.final.list$spelling.1[i]
-    #     # substitute spelling and adjust factor levels
-    #     df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in[[quo_text(quo_var)]])
-    #   } else if(val==3){
-    #     correct.sp <- readline(prompt="Enter correct spelling: ")
-    #     incorrect.sp1 <- sorted.final.list$spelling.1[i]
-    #     incorrect.sp2 <- sorted.final.list$spelling.2[i]
-    #     # substitute spelling and adjust factor levels
-    #     df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in[[quo_text(quo_var)]])
-    #     df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp2, correct.sp, df_in[[quo_text(quo_var)]])
-    #   } else if(val==4){
-    #     # do nothing
-    #   } else {
-    #     cat("\nInvalid option")
-    #   }
-    # } # End of interactive for loop
+      # Save correct and incorrect spelling
+      if(val==1){
+        correct.sp    <- refined_df_dist$name_1[i]
+        incorrect.sp1 <- refined_df_dist$name_2[i]
+        # substitute spelling and adjust factor levels - no changes will be made to df_in_1
+        df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in[[quo_text(quo_var)]])
+      } else if(val==2) {
+        correct.sp    <- refined_df_dist$name_2[i]
+        incorrect.sp1 <- refined_df_dist$name_1[i]
+        # substitute spelling and adjust factor levels
+        df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in[[quo_text(quo_var)]])
+      } else if(val==3){
+        correct.sp <- readline(prompt="Enter correct spelling: ")
+        incorrect.sp1 <- refined_df_dist$name_1[i]
+        incorrect.sp2 <- refined_df_dist$name_2[i]
+        # substitute spelling and adjust factor levels
+        df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in[[quo_text(quo_var)]])
+        df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp2, correct.sp, df_in[[quo_text(quo_var)]])
+      } else if(val==4){
+        # do nothing
+      } else {
+        cat("\nInvalid option")
+      }
+    } # End of interactive for loop
   }
 
   return(df_in)
