@@ -30,7 +30,7 @@ check_spelling <- function(df_1, var_1, df_2 = NULL, var_2 = NULL, distance_sens
   # turn bare inputs into quosures
   quo_var <- enquo(var_1)
   if(is.null(df_2) == FALSE){
-    quo_var_1 <- enquo(var_2)
+    quo_var_1 <- enquo(var_2) 
   }
 
   # quo_text(quo_var) gets the string of the column name from bare parameter input
@@ -39,7 +39,7 @@ check_spelling <- function(df_1, var_1, df_2 = NULL, var_2 = NULL, distance_sens
     char.list.1 <- as.character(df_2[[quo_text(quo_var_1)]])
   }
 
-  # Remove na's from the list of characters
+  # remove na's from the list of characters
   char.list <- na.omit(char.list)
   if(is.null(df_2) == FALSE){
     char.list.1 <- na.omit(char.list.1)
@@ -49,7 +49,7 @@ check_spelling <- function(df_1, var_1, df_2 = NULL, var_2 = NULL, distance_sens
   x <- unique(char.list)
   df_list <- data_frame(x = x, name=rep("df_1",length(x)))
 
-  # If there is a second dataframe, add unique spelling to dataframe
+  # If there is a second dataframe, add unique spelling to df_list
   if(is.null(df_2) == FALSE){
     y <- unique(char.list.1)
     df_x <- data_frame(x = x, name = rep("df_1",length(x)))
@@ -57,7 +57,7 @@ check_spelling <- function(df_1, var_1, df_2 = NULL, var_2 = NULL, distance_sens
     df_list <- rbind(df_x,df_y)
   }
 
-  # Need to run this nested for loop to get the length of the dataframe
+  # Need to run this nested for loop first to get the length of the dataframe and create empty dataframe shell
   tmp_count <- 0
   for(i in 1:length(df_list$x)){
     for(j in i:length(df_list$x)){
@@ -122,7 +122,7 @@ check_spelling <- function(df_1, var_1, df_2 = NULL, var_2 = NULL, distance_sens
         tmp_distance[count_1] <- df_dist$distance[k]
   }}}
 
-  # create a refined list without repeated pairs in similar spelling
+  # create a refined list without repeated pairs of similar spelling
   refined_df_dist <- data.frame(name_1=tmp_name_1,
                                 df_name_1=tmp_df_name_1,
                                 name_2=tmp_name_2,
@@ -146,26 +146,26 @@ check_spelling <- function(df_1, var_1, df_2 = NULL, var_2 = NULL, distance_sens
       cat("\n2. If spelling 2 is correct")
       cat("\n3. If both incorrect and you want to enter the correct spelling")
       cat("\n4. If both correct or you do not want to make any substitutions")
-      val <- eval(parse(text=readline(prompt="Enter option: ")))
+      val <- eval(parse(text = readline(prompt = "Enter option: ")))
       # Save correct and incorrect spelling
-      if(val==1){
+      if(val == 1){
         correct.sp    <- refined_df_dist$name_1[i]
         incorrect.sp1 <- refined_df_dist$name_2[i]
         # substitute spelling and adjust factor levels - no changes will be made to df_2
         df_1[[quo_text(quo_var)]] <- gsub(paste0("^",incorrect.sp1,"$"), correct.sp, df_1[[quo_text(quo_var)]], ignore.case = TRUE)
-      } else if(val==2) {
+      } else if(val == 2) {
         correct.sp    <- refined_df_dist$name_2[i]
         incorrect.sp1 <- refined_df_dist$name_1[i]
         # substitute spelling and adjust factor levels
         df_1[[quo_text(quo_var)]] <- gsub(paste0("^",incorrect.sp1,"$"), correct.sp, df_1[[quo_text(quo_var)]], ignore.case = TRUE)
-      } else if(val==3){
+      } else if(val == 3){
         correct.sp <- readline(prompt="Enter correct spelling: ")
         incorrect.sp1 <- refined_df_dist$name_1[i]
         incorrect.sp2 <- refined_df_dist$name_2[i]
         # substitute spelling and adjust factor levels
         df_1[[quo_text(quo_var)]] <- gsub(paste0("^",incorrect.sp1,"$"), correct.sp, df_1[[quo_text(quo_var)]], ignore.case = TRUE)
         df_1[[quo_text(quo_var)]] <- gsub(paste0("^",incorrect.sp2,"$"), correct.sp, df_1[[quo_text(quo_var)]], ignore.case = TRUE)
-      } else if(val==4){
+      } else if(val == 4){
         # do nothing
       } else {
         cat("\nInvalid option")
