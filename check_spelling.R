@@ -8,7 +8,7 @@
 #          df_in_1              = second data frame with additional character vector.
 #          var_name_1           = bare parameter name indicating the vector to add to the first vector.
 #          distance_sensitivity = positive integer indicating approximate string distance between characters in char
-#                                 list.
+#                                 list. 2-3 should be sufficient to catch spelling mistakes.
 # OUTPUTS: updated dataframe
 
 # Libraries ______________________________________________________________________________________________________
@@ -16,22 +16,22 @@ library(rlang)
 library(dplyr)
 
 # Check spelling of vector _______________________________________________________________________________________
-check.spelling = function(df_in, var_name, df_in_1=NULL, var_name_1=NULL, distance_sensitivity){
+check.spelling <- function(df_in_1, var_name_1, df_in_2=NULL, var_name_2=NULL, distance_sensitivity){
   # turn bare args into quosures
-  quo_var <- enquo(var_name)
-  if(is.null(df_in_1) == FALSE){
-    quo_var_1 <- enquo(var_name_1)  
+  quo_var <- enquo(var_name_1)
+  if(is.null(df_in_2) == FALSE){
+    quo_var_1 <- enquo(var_name_2)  
   }
   
   # quo_text(quo_var) gets the string of the column name from bare parameter input
-  char.list <- as.character(df_in[[quo_text(quo_var)]])
-  if(is.null(df_in_1) == FALSE){
-    char.list.1 <- as.character(df_in_1[[quo_text(quo_var_1)]])
+  char.list <- as.character(df_in_1[[quo_text(quo_var)]])
+  if(is.null(df_in_2) == FALSE){
+    char.list.1 <- as.character(df_in_2[[quo_text(quo_var_1)]])
   }
 
   # Remove na's from the list of characters
   char.list <- na.omit(char.list)
-  if(is.null(df_in_1) == FALSE){
+  if(is.null(df_in_2) == FALSE){
     char.list.1 <- na.omit(char.list.1)
   }
 
@@ -39,7 +39,7 @@ check.spelling = function(df_in, var_name, df_in_1=NULL, var_name_1=NULL, distan
   x <- unique(char.list)
   df_list <- data_frame(x=x, name=rep("df_1",length(x)))
   # Only run this code if there is a second dataframe
-  if(is.null(df_in_1) == FALSE){
+  if(is.null(df_in_2) == FALSE){
     y <- unique(char.list.1)
     df_x <- data_frame(x=x, name=rep("df_1",length(x)))
     df_y <- data_frame(x=y, name=rep("df_2",length(y)))
@@ -156,20 +156,20 @@ check.spelling = function(df_in, var_name, df_in_1=NULL, var_name_1=NULL, distan
       if(val==1){
         correct.sp    <- refined_df_dist$name_1[i]
         incorrect.sp1 <- refined_df_dist$name_2[i]
-        # substitute spelling and adjust factor levels - no changes will be made to df_in_1
-        df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in[[quo_text(quo_var)]])
+        # substitute spelling and adjust factor levels - no changes will be made to df_in_2
+        df_in_1[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in_1[[quo_text(quo_var)]])
       } else if(val==2) {
         correct.sp    <- refined_df_dist$name_2[i]
         incorrect.sp1 <- refined_df_dist$name_1[i]
         # substitute spelling and adjust factor levels
-        df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in[[quo_text(quo_var)]])
+        df_in_1[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in_1[[quo_text(quo_var)]])
       } else if(val==3){
         correct.sp <- readline(prompt="Enter correct spelling: ")
         incorrect.sp1 <- refined_df_dist$name_1[i]
         incorrect.sp2 <- refined_df_dist$name_2[i]
         # substitute spelling and adjust factor levels
-        df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in[[quo_text(quo_var)]])
-        df_in[[quo_text(quo_var)]] <- gsub(incorrect.sp2, correct.sp, df_in[[quo_text(quo_var)]])
+        df_in_1[[quo_text(quo_var)]] <- gsub(incorrect.sp1, correct.sp, df_in_1[[quo_text(quo_var)]])
+        df_in_1[[quo_text(quo_var)]] <- gsub(incorrect.sp2, correct.sp, df_in_1[[quo_text(quo_var)]])
       } else if(val==4){
         # do nothing
       } else {
@@ -178,9 +178,8 @@ check.spelling = function(df_in, var_name, df_in_1=NULL, var_name_1=NULL, distan
     } # End of interactive for loop
   }
 
-  return(df_in)
-} # End of function
-
+  return(df_in_1)
+}
 
 
 
