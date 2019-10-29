@@ -110,7 +110,7 @@ check_spelling <- function(df_1, var_1, df_2 = NULL, var_2 = NULL, distance_sens
       for(m in 1:length(tmp_name_1)){
         if((df_dist$name_1[k] == tmp_name_1[m]) && (df_dist$name_2[k] == tmp_name_2[m])){
           flag <- 1
-        } else if (df_dist$name_1[k] == tmp_name_2[m] && df_dist$name_2[k] == tmp_name_1[m]){
+        } else if ((df_dist$name_1[k] == tmp_name_2[m]) && (df_dist$name_2[k] == tmp_name_1[m])){
           flag <- 1
         }}
       if(flag == 0){
